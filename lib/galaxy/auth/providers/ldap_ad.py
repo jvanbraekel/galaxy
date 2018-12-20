@@ -169,7 +169,6 @@ class LDAP(AuthProvider):
                     ldap.SCOPE_SUBTREE,
                     _get_subs(options, 'search-filter', params), attributes,
                     timeout=60, sizelimit=1)
-                log.warning(suser[0])
 
                 # parse results
                 if suser is None or len(suser) == 0:
@@ -223,8 +222,6 @@ class LDAP(AuthProvider):
         # check whether the user is a member of a specified group/domain/...
         if 'search-memberof-filter' in options:
             search_filter = _get_subs(options, 'search-memberof-filter', params)
-            log.warning('Search_filter: -----------------------------------')
-            log.warning(search_filter)
             if search_filter not in params['memberOf']:
                 return failure_mode, '', ''
 
@@ -277,19 +274,6 @@ class LDAP(AuthProvider):
             return False
         log.debug('LDAP authentication successful')
         return True
-
-    def _is_member_of(self, search_filter, memberships):
-        """
-        Check whether the given search filter is present in any of the memberships
-        """
-        log.warning('Memberships: ------------------------------------')
-        log.warning(memberships)
-        for membership in memberships:
-            if search_filter in membership:
-                log.warning('Membership----------------------------------')
-                log.warning(membership)
-                return True
-        return False
 
     def authenticate_user(self, user, password, options):
         """
